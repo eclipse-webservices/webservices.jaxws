@@ -93,9 +93,11 @@ public class WSDL2JavaClientDefaultingCommand extends AbstractDataModelOperation
         		model.setTargetNamespace(targetNamespace);
         		model.getIncludedNamespaces().put(targetNamespace, packageName);
 
-                String wsdlLocation = WSDLUtils.getWSDLLocation(definition);
-                if (wsdlLocation != null) {
-                    model.setWsdlLocation(wsdlLocation);
+        		if (wsdlUrl.getProtocol().equals("file")) { //$NON-NLS-1$
+                    String wsdlLocation = WSDLUtils.getWSDLLocation(definition);
+                    if (wsdlLocation != null) {
+                        model.setWsdlLocation(wsdlLocation);
+                    }
                 }
         		
         		model.setWsdlDefinition(definition);
