@@ -27,7 +27,6 @@ import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.Signature;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
-import org.eclipse.ltk.core.refactoring.TextFileChange;
 import org.eclipse.jdt.internal.ui.JavaPlugin;
 import org.eclipse.jdt.internal.ui.javaeditor.JavaSourceViewer;
 import org.eclipse.jdt.internal.ui.text.SimpleJavaSourceViewerConfiguration;
@@ -55,13 +54,14 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.TreeViewerColumn;
-import org.eclipse.jst.ws.internal.cxf.core.model.Java2WSDataModel;
 import org.eclipse.jst.ws.annotations.core.utils.AnnotationUtils;
+import org.eclipse.jst.ws.internal.cxf.core.model.Java2WSDataModel;
 import org.eclipse.jst.ws.internal.cxf.core.utils.CXFModelUtils;
 import org.eclipse.jst.ws.internal.cxf.creation.ui.CXFCreationUIMessages;
 import org.eclipse.jst.ws.internal.cxf.creation.ui.CXFCreationUIPlugin;
 import org.eclipse.jst.ws.internal.cxf.creation.ui.viewers.AnnotationColumnLabelProvider;
 import org.eclipse.jst.ws.jaxws.core.utils.JDTUtils;
+import org.eclipse.ltk.core.refactoring.TextFileChange;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.graphics.Font;
@@ -201,7 +201,7 @@ public class JAXWSAnnotateJavaWidget extends SimpleWidgetDataContributor {
 
                     IDocument document = annotationPreviewViewer.getDocument();
                     FindReplaceDocumentAdapter findReplaceDocumentAdapter =
-                    	new FindReplaceDocumentAdapter(document);
+                        new FindReplaceDocumentAdapter(document);
                     try {
                         if (firstElement instanceof IType) {
                             IType sourceType = (IType) firstElement;
@@ -240,23 +240,23 @@ public class JAXWSAnnotateJavaWidget extends SimpleWidgetDataContributor {
                                 regex.append(typeName);
                                 regex.append("\\s*?");
                                 regex.append(paramterNames[i]);
-                            	if (i < parameterTypes.length - 1) {
-                            	    regex.append("\\s*?,\\s*?.*?");
-                            	}
-							}
+                                if (i < parameterTypes.length - 1) {
+                                    regex.append("\\s*?,\\s*?.*?");
+                                }
+                            }
                             regex.append("\\s*?\\)");
 
-                        	IRegion region = findReplaceDocumentAdapter.find(0, regex.toString(), true, true,
-                        	        false, true);
+                            IRegion region = findReplaceDocumentAdapter.find(0, regex.toString(), true, true,
+                                    false, true);
 
                             if (region != null) {
                                 IRegion elementNameRegion = findReplaceDocumentAdapter.find(
-                                		region.getOffset(), elementName, true, true, true, false);
+                                        region.getOffset(), elementName, true, true, true, false);
                                 if (elementNameRegion != null) {
-                                	annotationPreviewViewer.setSelectedRange(elementNameRegion.getOffset(),
-                                    		elementNameRegion.getLength());
+                                    annotationPreviewViewer.setSelectedRange(elementNameRegion.getOffset(),
+                                            elementNameRegion.getLength());
                                     annotationPreviewViewer.revealRange(elementNameRegion.getOffset(),
-                                    		elementNameRegion.getLength());
+                                            elementNameRegion.getLength());
                                 }
                             }
                         }
@@ -264,7 +264,7 @@ public class JAXWSAnnotateJavaWidget extends SimpleWidgetDataContributor {
                         CXFCreationUIPlugin.log(ble);
                     } catch (JavaModelException jme) {
                         CXFCreationUIPlugin.log(jme);
-					}
+                    }
                 }
             }
         });
@@ -408,6 +408,7 @@ public class JAXWSAnnotateJavaWidget extends SimpleWidgetDataContributor {
             textFileChange.setEdit(multiTextEdit);
             textFileChange.setKeepPreviewEdits(true);
 
+            CXFModelUtils.getImportsChange(compilationUnit, model, textFileChange, false);
             CXFModelUtils.getWebServiceAnnotationChange(type, model, textFileChange);
 
             IMethod[] typeMethods = JDTUtils.getPublicMethods(type);
@@ -424,15 +425,14 @@ public class JAXWSAnnotateJavaWidget extends SimpleWidgetDataContributor {
                     CXFModelUtils.getResponseWrapperAnnotationChange(type, method, textFileChange);
                 }
                 if (methodAnnotationMap.get(CXFModelUtils.WEB_PARAM)) {
-					List<SingleVariableDeclaration> parameters = AnnotationUtils.getSingleVariableDeclarations(method);
-					for (SingleVariableDeclaration parameter : parameters) {
-						CXFModelUtils.getWebParamAnnotationChange(type, method,
-								(ILocalVariable) parameter.resolveBinding().getJavaElement(), textFileChange);
-					}
+                    List<SingleVariableDeclaration> parameters = AnnotationUtils.getSingleVariableDeclarations(method);
+                    for (SingleVariableDeclaration parameter : parameters) {
+                        CXFModelUtils.getWebParamAnnotationChange(type, method,
+                                (ILocalVariable) parameter.resolveBinding().getJavaElement(), textFileChange);
+                    }
                 }
             }
 
-            CXFModelUtils.getImportsChange(compilationUnit, model, textFileChange, false);
             annotationPreviewViewer.getDocument().set(textFileChange.getPreviewContent(monitor));
 
             annotationPreviewViewer.setRedraw(true);
