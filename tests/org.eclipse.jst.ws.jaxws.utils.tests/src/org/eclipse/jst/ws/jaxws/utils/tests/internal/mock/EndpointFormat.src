@@ -1,1 +1,0 @@
-public class Endpoint{public Endpoint(){}public void useVoid(){}public String echoString(String s){return s}}
