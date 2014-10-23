@@ -116,17 +116,13 @@ public class UniqueNamesRule extends AbstractAnnotationProcessor {
         if (annotationMirror != null) {
             AnnotationValue annotationValue = AnnotationUtils.getAnnotationValue(annotationMirror, attributeName);
             if (annotationValue != null) {
-            	String value = annotationValue.toString();
-            	if (value.startsWith("") && value.endsWith("")) {
-            		value = value.substring(1, value.length() -1);
-            	}
-            	if (value.trim().length() == 0) {
+                if (annotationValue.toString().trim().length() == 0) {
                     printError(annotationValue.getPosition(), JAXWSCoreMessages.bind(
                             JAXWSCoreMessages.EMPTY_ATTRIBUTE_VALUE, new Object[] { annotationName, attributeName }));
-                } else if (!XMLChar.isValidName(value)) {
+                } else if (!XMLChar.isValidName(annotationValue.toString())) {
                     printError(annotationValue.getPosition(), JAXWSCoreMessages.bind(
                             JAXWSCoreMessages.INVALID_NCNAME_ATTRIBUTE, new Object[] { annotationName,
-                                    attributeName,  value }));
+                                    attributeName,  annotationValue.toString() }));
                 }
             }
         }
