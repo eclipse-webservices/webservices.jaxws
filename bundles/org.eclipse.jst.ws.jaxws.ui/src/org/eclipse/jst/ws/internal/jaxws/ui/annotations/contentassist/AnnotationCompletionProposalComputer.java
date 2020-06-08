@@ -29,6 +29,7 @@ import org.eclipse.jdt.ui.text.java.ContentAssistInvocationContext;
 import org.eclipse.jdt.ui.text.java.IJavaCompletionProposalComputer;
 import org.eclipse.jdt.ui.text.java.JavaContentAssistInvocationContext;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
+import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jst.ws.annotations.core.AnnotationsManager;
 import org.eclipse.jst.ws.annotations.core.initialization.IAnnotationAttributeInitializer;
 import org.eclipse.jst.ws.annotations.core.utils.AnnotationUtils;
@@ -40,8 +41,7 @@ public class AnnotationCompletionProposalComputer implements IJavaCompletionProp
         super();
     }
 
-    @SuppressWarnings("unchecked")
-    public List computeCompletionProposals(ContentAssistInvocationContext context, IProgressMonitor monitor) {
+    public List<ICompletionProposal> computeCompletionProposals(ContentAssistInvocationContext context, IProgressMonitor monitor) {
         if (context instanceof JavaContentAssistInvocationContext) {
             return computeCompletionProposals((JavaContentAssistInvocationContext) context);
         }
@@ -149,8 +149,7 @@ public class AnnotationCompletionProposalComputer implements IJavaCompletionProp
         return false;
     }
 
-    @SuppressWarnings("unchecked")
-    public List computeContextInformation(ContentAssistInvocationContext context, IProgressMonitor monitor) {
+    public List<IContextInformation> computeContextInformation(ContentAssistInvocationContext context, IProgressMonitor monitor) {
         return Collections.emptyList();
     }
 
